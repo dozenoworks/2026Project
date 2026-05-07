@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Project Portfolio Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0a0e1a;--bg2:#0f1628;--bg3:#151d35;--border:#1e2d50;--border2:#263660;--accent:#00e5ff;--accent2:#ff6b35;--accent3:#7cfc6e;--warn:#ffd166;--danger:#ff4d6d;--text:#e8eaf6;--text2:#8892b0;--text3:#4a5580;--card:#111827;--radius:12px;--mono:'Space Mono',monospace;--sans:'Syne',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(0,229,255,.04) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(255,107,53,.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+.shell{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 24px 60px}
+header{padding:40px 0 32px;border-bottom:1px solid var(--border);margin-bottom:32px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+h1{font-size:clamp(26px,4vw,42px);font-weight:800;line-height:1.1;letter-spacing:-1px}
+h1 span{color:var(--accent)}
+.subtitle{color:var(--text2);font-size:14px;margin-top:6px;font-weight:400}
+.header-right{display:flex;align-items:center;gap:12px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--accent3);box-shadow:0 0 0 3px rgba(124,252,110,.2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(124,252,110,.2)}50%{box-shadow:0 0 0 6px rgba(124,252,110,.05)}}
+.live-label{font-family:var(--mono);font-size:11px;color:var(--accent3)}
+.selector-wrap{margin-bottom:32px}
+.selector-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{padding:8px 16px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s}
+.tab:hover{border-color:var(--accent);color:var(--accent)}
+.tab.active{background:rgba(0,229,255,.1);border-color:var(--accent);color:var(--accent)}
+.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dot-good{background:var(--accent3)}.dot-warn{background:var(--warn)}.dot-crit{background:var(--danger)}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:32px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
+.kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi-card.k-plan::after{background:var(--accent)}.kpi-card.k-actual::after{background:var(--accent2)}.kpi-card.k-var::after{background:var(--warn)}.kpi-card.k-behind::after{background:var(--danger)}
+.kpi-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.kpi-val{font-size:32px;font-weight:800;line-height:1;letter-spacing:-1px}
+.kpi-val.good{color:var(--accent3)}.kpi-val.warn{color:var(--warn)}.kpi-val.bad{color:var(--danger)}.kpi-val.plan{color:var(--accent)}.kpi-val.actual{color:var(--accent2)}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--mono)}
+.main-grid{display:grid;grid-template-columns:1fr 400px;gap:24px;margin-bottom:32px;align-items:start}
+@media(max-width:1000px){.main-grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
+.card-badge{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:20px;background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.2)}
+.chart-wrap{padding:20px}
+canvas{max-height:280px}
+.task-table{width:100%;border-collapse:collapse}
+.task-table th{padding:10px 16px;text-align:left;font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap}
+.task-table td{padding:10px 16px;font-size:13px;border-bottom:1px solid rgba(30,45,80,.5);transition:background .15s}
+.task-table tr:hover td{background:rgba(255,255,255,.02)}
+.task-table tr:last-child td{border-bottom:none}
+.progress-bar-wrap{width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden;position:relative}
+.progress-bar-plan{position:absolute;top:0;left:0;height:100%;background:var(--accent);opacity:.3;border-radius:3px;transition:width .6s ease}
+.progress-bar-act{position:absolute;top:0;left:0;height:100%;background:var(--accent2);border-radius:3px;transition:width .6s ease}
+.pct-label{font-family:var(--mono);font-size:10px;margin-top:3px;color:var(--text2)}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+.badge-good{background:rgba(124,252,110,.12);color:var(--accent3);border:1px solid rgba(124,252,110,.25)}
+.badge-warn{background:rgba(255,209,102,.12);color:var(--warn);border:1px solid rgba(255,209,102,.25)}
+.badge-crit{background:rgba(255,77,109,.12);color:var(--danger);border:1px solid rgba(255,77,109,.25)}
+.badge-ns{background:rgba(74,85,128,.2);color:var(--text3);border:1px solid var(--border)}
+.badge-done{background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.2)}
+.disc-tag{display:inline-block;padding:2px 8px;background:var(--bg3);color:var(--text2);border-radius:4px;font-size:11px;border:1px solid var(--border)}
+.ca-item{padding:14px 20px;border-bottom:1px solid rgba(30,45,80,.5);transition:background .15s}
+.ca-item:last-child{border-bottom:none}
+.ca-item:hover{background:rgba(255,255,255,.02)}
+.ca-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px}
+.ca-task{font-size:13px;font-weight:600;flex:1}
+.ca-var{font-family:var(--mono);font-size:11px;font-weight:700;white-space:nowrap}
+.ca-var.warn{color:var(--warn)}.ca-var.crit{color:var(--danger)}
+.ca-action{font-size:11px;color:var(--text2);padding:6px 10px;background:var(--bg3);border-radius:6px;border-left:2px solid var(--accent2);line-height:1.5}
+.ca-meta{font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:4px}
+.empty-state{padding:40px 20px;text-align:center;color:var(--text3);font-family:var(--mono);font-size:11px}
+.portfolio-wrap{margin-bottom:32px}
+.portfolio-table{width:100%;border-collapse:collapse}
+.portfolio-table th{padding:10px 16px;text-align:left;font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border)}
+.portfolio-table td{padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(30,45,80,.4)}
+.portfolio-table tr{cursor:pointer;transition:background .15s}
+.portfolio-table tr:hover td{background:rgba(0,229,255,.03)}
+.portfolio-table tr.active-row td{background:rgba(0,229,255,.06)}
+.portfolio-table tr.active-row td:first-child{border-left:2px solid var(--accent)}
+.proj-name{font-weight:700;font-size:14px}
+.mini-scurve{width:80px;height:28px;display:inline-block;vertical-align:middle}
+.table-scroll{max-height:420px;overflow-y:auto}
+.table-scroll::-webkit-scrollbar{width:4px}
+.table-scroll::-webkit-scrollbar-track{background:transparent}
+.table-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+footer{border-top:1px solid var(--border);padding:20px 0;font-family:var(--mono);font-size:10px;color:var(--text3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.fade-in{animation:fadeIn .4s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.section-title{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div>
+    <div class="eyebrow">// Portfolio Intelligence System</div>
+    <h1>Project <span>Progress</span><br>Dashboard</h1>
+    <div class="subtitle">10 Active Projects · S-Curve Tracking · Auto Corrective Actions</div>
+  </div>
+  <div class="header-right">
+    <div class="live-dot"></div>
+    <div class="live-label">LIVE MONITOR</div>
+  </div>
+</header>
+<div class="selector-wrap">
+  <div class="selector-label">// Select Project</div>
+  <div class="tabs" id="tabs"></div>
+</div>
+<div class="kpi-row" id="kpi-row"></div>
+<div class="main-grid">
+  <div class="card fade-in">
+    <div class="card-header">
+      <div class="card-title">S-Curve — Planned vs Actual</div>
+      <div class="card-badge">Cumulative %</div>
+    </div>
+    <div class="chart-wrap"><canvas id="scurveChart"></canvas></div>
+  </div>
+  <div class="card fade-in">
+    <div class="card-header">
+      <div class="card-title">⚠ Corrective Actions Required</div>
+      <div class="card-badge" id="ca-count-badge">0 Flags</div>
+    </div>
+    <div id="ca-list"></div>
+  </div>
+</div>
+<div class="card fade-in" style="margin-bottom:32px">
+  <div class="card-header">
+    <div class="card-title">Task Detail — All Disciplines</div>
+    <div class="card-badge" id="task-count-badge">0 Tasks</div>
+  </div>
+  <div class="table-scroll">
+    <table class="task-table">
+      <thead><tr>
+        <th>Discipline</th><th>Task</th><th>Planned Start</th>
+        <th>Planned End</th><th>Progress</th><th>Variance</th><th>Status</th>
+      </tr></thead>
+      <tbody id="task-tbody"></tbody>
+    </table>
+  </div>
+</div>
+<div class="portfolio-wrap">
+  <div class="section-title">// Portfolio Overview — All Projects</div>
+  <div class="card">
+    <div class="table-scroll">
+      <table class="portfolio-table">
+        <thead><tr>
+          <th>Project</th><th>Planned %</th><th>Actual %</th>
+          <th>Variance</th><th>Tasks Behind</th><th>S-Trend</th><th>Status</th>
+        </tr></thead>
+        <tbody id="portfolio-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<footer>
+  <span>PROJECT PORTFOLIO DASHBOARD · v1.0</span>
+  <span id="footer-date"></span>
+</footer>
+</div>
+<script>
+const PROJECTS=[{name:"Project Alpha",code:"PRJ-A",type:"EPCC — Offshore Platform",tasks:[{disc:"Civil",task:"Foundation Design",ps:"2025-01-05",pe:"2025-03-20",pp:100,ap:100,w:2.5},{disc:"Civil",task:"Earthworks",ps:"2025-02-01",pe:"2025-05-10",pp:95,ap:80,w:3.0},{disc:"Structural",task:"Steel Frame Design",ps:"2025-01-20",pe:"2025-04-15",pp:100,ap:98,w:2.0},{disc:"Structural",task:"Fabrication",ps:"2025-03-01",pe:"2025-07-30",pp:70,ap:55,w:4.0},{disc:"Mechanical",task:"Equipment Procurement",ps:"2025-02-15",pe:"2025-06-20",pp:80,ap:72,w:3.5},{disc:"Mechanical",task:"Rotating Equipment Inst.",ps:"2025-06-01",pe:"2025-09-30",pp:20,ap:10,w:3.0},{disc:"Electrical",task:"HV Cable Routing",ps:"2025-04-01",pe:"2025-07-15",pp:55,ap:40,w:2.5},{disc:"Electrical",task:"MCC Installation",ps:"2025-05-01",pe:"2025-08-20",pp:40,ap:30,w:2.0},{disc:"Instrumentation",task:"Loop Drawing",ps:"2025-02-01",pe:"2025-04-30",pp:100,ap:100,w:1.5},{disc:"Instrumentation",task:"Field Instrument Install",ps:"2025-06-01",pe:"2025-09-15",pp:15,ap:8,w:2.0},{disc:"Piping",task:"Isometric Drawings",ps:"2025-01-15",pe:"2025-04-01",pp:100,ap:100,w:2.0},{disc:"Piping",task:"Pipe Spool Fabrication",ps:"2025-03-15",pe:"2025-07-30",pp:65,ap:48,w:3.5},{disc:"Procurement",task:"Long Lead Items",ps:"2025-01-10",pe:"2025-05-30",pp:90,ap:85,w:4.0},{disc:"Procurement",task:"Bulk Materials",ps:"2025-03-01",pe:"2025-06-30",pp:70,ap:60,w:2.5},{disc:"Testing",task:"Pre-Commissioning",ps:"2025-08-01",pe:"2025-10-30",pp:0,ap:0,w:2.0},{disc:"Testing",task:"Commissioning",ps:"2025-10-01",pe:"2025-12-15",pp:0,ap:0,w:2.0}]},{name:"Project Bravo",code:"PRJ-B",type:"Pipeline — Onshore 42\"",tasks:[{disc:"Civil",task:"Right of Way Clearing",ps:"2025-01-10",pe:"2025-03-30",pp:100,ap:100,w:3.0},{disc:"Civil",task:"Grading & Trenching",ps:"2025-02-15",pe:"2025-06-30",pp:85,ap:90,w:4.0},{disc:"Structural",task:"Valve Station Design",ps:"2025-01-20",pe:"2025-03-15",pp:100,ap:100,w:1.5},{disc:"Structural",task:"Valve Station Constr.",ps:"2025-04-01",pe:"2025-07-30",pp:50,ap:52,w:2.5},{disc:"Mechanical",task:"Pipe Procurement 42\"",ps:"2025-01-05",pe:"2025-04-30",pp:100,ap:98,w:5.0},{disc:"Mechanical",task:"Pipe Laying",ps:"2025-04-15",pe:"2025-09-30",pp:45,ap:48,w:5.0},{disc:"Electrical",task:"SCADA Design",ps:"2025-02-01",pe:"2025-05-15",pp:90,ap:88,w:2.0},{disc:"Electrical",task:"SCADA Installation",ps:"2025-06-01",pe:"2025-09-01",pp:20,ap:18,w:2.5},{disc:"Instrumentation",task:"Flow Meter Spec",ps:"2025-02-01",pe:"2025-03-30",pp:100,ap:100,w:1.0},{disc:"Instrumentation",task:"CP System Design",ps:"2025-02-15",pe:"2025-04-30",pp:100,ap:100,w:1.5},{disc:"Piping",task:"Tie-in Points Design",ps:"2025-01-20",pe:"2025-03-01",pp:100,ap:100,w:1.5},{disc:"Piping",task:"Hydro Test Procedure",ps:"2025-05-01",pe:"2025-06-30",pp:80,ap:78,w:1.5},{disc:"Procurement",task:"Valves & Fittings",ps:"2025-01-15",pe:"2025-04-15",pp:100,ap:100,w:3.0},{disc:"Procurement",task:"Coating & Wrapping",ps:"2025-03-01",pe:"2025-06-01",pp:80,ap:82,w:2.0},{disc:"Testing",task:"Hydro Test",ps:"2025-09-01",pe:"2025-10-15",pp:0,ap:0,w:2.0},{disc:"Testing",task:"Pigging & Gauging",ps:"2025-10-20",pe:"2025-11-30",pp:0,ap:0,w:1.5}]},{name:"Project Charlie",code:"PRJ-C",type:"Refinery — CDU Revamp",tasks:[{disc:"Civil",task:"Structural Assessment",ps:"2025-01-05",pe:"2025-02-28",pp:100,ap:100,w:1.5},{disc:"Civil",task:"Foundation Upgrade",ps:"2025-03-01",pe:"2025-06-30",pp:65,ap:45,w:3.0},{disc:"Structural",task:"Platform Modification",ps:"2025-02-15",pe:"2025-05-30",pp:85,ap:70,w:2.5},{disc:"Structural",task:"Pipe Rack Extension",ps:"2025-04-01",pe:"2025-07-15",pp:50,ap:32,w:2.0},{disc:"Mechanical",task:"Column Internals",ps:"2025-03-01",pe:"2025-06-15",pp:70,ap:55,w:3.5},{disc:"Mechanical",task:"Heat Exchanger Retubing",ps:"2025-04-15",pe:"2025-07-30",pp:45,ap:28,w:3.0},{disc:"Electrical",task:"Motor Control Upgrade",ps:"2025-03-15",pe:"2025-06-30",pp:65,ap:50,w:2.0},{disc:"Electrical",task:"Grounding System",ps:"2025-04-01",pe:"2025-06-01",pp:60,ap:55,w:1.5},{disc:"Instrumentation",task:"DCS Migration",ps:"2025-02-01",pe:"2025-07-30",pp:75,ap:55,w:4.0},{disc:"Instrumentation",task:"Safety System Upgrade",ps:"2025-05-01",pe:"2025-08-30",pp:30,ap:15,w:3.5},{disc:"Piping",task:"Process Pipe Revamp",ps:"2025-03-01",pe:"2025-07-30",pp:65,ap:45,w:4.0},{disc:"Piping",task:"Utility Piping",ps:"2025-04-01",pe:"2025-07-15",pp:50,ap:38,w:2.5},{disc:"Procurement",task:"Specialty Valves",ps:"2025-01-15",pe:"2025-05-01",pp:100,ap:95,w:3.0},{disc:"Procurement",task:"Refractory Materials",ps:"2025-03-01",pe:"2025-06-01",pp:75,ap:65,w:2.0},{disc:"Testing",task:"Pre-startup Safety Rev",ps:"2025-09-01",pe:"2025-10-15",pp:0,ap:0,w:2.5},{disc:"Testing",task:"Startup & Performance",ps:"2025-10-20",pe:"2025-12-31",pp:0,ap:0,w:2.0}]},{name:"Project Delta",code:"PRJ-D",type:"Power Plant — 150MW",tasks:[{disc:"Civil",task:"Site Preparation",ps:"2025-01-01",pe:"2025-04-30",pp:100,ap:100,w:3.5},{disc:"Civil",task:"Turbine Hall Foundation",ps:"2025-02-15",pe:"2025-07-30",pp:80,ap:82,w:5.0},{disc:"Structural",task:"Steel Structure",ps:"2025-05-01",pe:"2025-09-30",pp:35,ap:36,w:4.0},{disc:"Structural",task:"Cooling Tower Constr.",ps:"2025-04-01",pe:"2025-09-15",pp:45,ap:44,w:3.5},{disc:"Mechanical",task:"Gas Turbine Delivery",ps:"2025-01-10",pe:"2025-06-30",pp:85,ap:88,w:6.0},{disc:"Mechanical",task:"GT Installation",ps:"2025-07-01",pe:"2025-10-30",pp:10,ap:10,w:5.0},{disc:"Electrical",task:"Main Transformer",ps:"2025-03-01",pe:"2025-07-30",pp:70,ap:72,w:3.0},{disc:"Electrical",task:"HV Switchgear",ps:"2025-05-01",pe:"2025-09-01",pp:35,ap:33,w:2.5},{disc:"Instrumentation",task:"DCS Design",ps:"2025-02-01",pe:"2025-05-30",pp:95,ap:95,w:3.0},{disc:"Instrumentation",task:"DCS Installation",ps:"2025-07-01",pe:"2025-10-01",pp:10,ap:9,w:3.0},{disc:"Piping",task:"Steam System",ps:"2025-04-15",pe:"2025-09-30",pp:40,ap:38,w:4.0},{disc:"Piping",task:"Fuel Gas System",ps:"2025-05-01",pe:"2025-09-15",pp:33,ap:30,w:3.0},{disc:"Procurement",task:"Boiler & HRSG",ps:"2025-01-05",pe:"2025-06-30",pp:88,ap:90,w:5.0},{disc:"Procurement",task:"Electrical Equipment",ps:"2025-02-15",pe:"2025-07-15",pp:75,ap:76,w:3.0},{disc:"Testing",task:"Cold Loop Check",ps:"2025-11-01",pe:"2025-12-15",pp:0,ap:0,w:2.0},{disc:"Testing",task:"Trial Operation",ps:"2025-12-15",pe:"2026-02-28",pp:0,ap:0,w:2.5}]},{name:"Project Echo",code:"PRJ-E",type:"LNG Terminal — Storage",tasks:[{disc:"Civil",task:"Bund Wall Construction",ps:"2025-01-01",pe:"2025-05-30",pp:90,ap:72,w:4.0},{disc:"Civil",task:"Tank Foundation",ps:"2025-02-01",pe:"2025-06-30",pp:80,ap:58,w:5.0},{disc:"Structural",task:"Tank Shell Erection",ps:"2025-05-01",pe:"2025-10-30",pp:28,ap:12,w:6.0},{disc:"Structural",task:"Roof Structure",ps:"2025-08-01",pe:"2025-12-31",pp:0,ap:0,w:4.0},{disc:"Mechanical",task:"Cryogenic Pump Spec",ps:"2025-01-15",pe:"2025-03-30",pp:100,ap:100,w:2.0},{disc:"Mechanical",task:"BOG Compressor",ps:"2025-02-15",pe:"2025-07-30",pp:72,ap:50,w:3.5},{disc:"Electrical",task:"Substation Design",ps:"2025-02-01",pe:"2025-05-01",pp:100,ap:98,w:2.5},{disc:"Electrical",task:"Substation Build",ps:"2025-05-15",pe:"2025-09-30",pp:32,ap:20,w:3.0},{disc:"Instrumentation",task:"Cold Box Instrumentation",ps:"2025-03-01",pe:"2025-07-30",pp:68,ap:45,w:3.0},{disc:"Instrumentation",task:"Fire & Gas Detection",ps:"2025-06-01",pe:"2025-09-30",pp:18,ap:8,w:2.5},{disc:"Piping",task:"Cryogenic Piping",ps:"2025-04-01",pe:"2025-09-30",pp:42,ap:25,w:5.0},{disc:"Piping",task:"Loading Arm",ps:"2025-05-01",pe:"2025-10-30",pp:28,ap:15,w:3.5},{disc:"Procurement",task:"Tank Insulation (9% Ni)",ps:"2025-01-10",pe:"2025-06-30",pp:82,ap:60,w:5.0},{disc:"Procurement",task:"Safety Valves",ps:"2025-03-01",pe:"2025-06-01",pp:78,ap:75,w:2.0},{disc:"Testing",task:"Hydro & Pneumatic Test",ps:"2025-12-01",pe:"2026-02-28",pp:0,ap:0,w:2.5},{disc:"Testing",task:"Cooldown & Commissioning",ps:"2026-02-01",pe:"2026-05-31",pp:0,ap:0,w:3.0}]},{name:"Project Foxtrot",code:"PRJ-F",type:"Water Treatment — WWTP",tasks:[{disc:"Civil",task:"Excavation & Shoring",ps:"2025-01-05",pe:"2025-03-15",pp:100,ap:100,w:3.0},{disc:"Civil",task:"Concrete Tanks",ps:"2025-02-20",pe:"2025-07-30",pp:78,ap:80,w:4.5},{disc:"Structural",task:"Walkway & Access",ps:"2025-04-01",pe:"2025-07-01",pp:55,ap:56,w:1.5},{disc:"Structural",task:"Equipment Platforms",ps:"2025-05-01",pe:"2025-08-01",pp:35,ap:33,w:1.5},{disc:"Mechanical",task:"Pump Station",ps:"2025-03-01",pe:"2025-06-30",pp:68,ap:70,w:3.0},{disc:"Mechanical",task:"Blower Equipment",ps:"2025-04-01",pe:"2025-07-15",pp:50,ap:48,w:2.5},{disc:"Electrical",task:"MV Power Supply",ps:"2025-03-01",pe:"2025-06-01",pp:78,ap:78,w:2.0},{disc:"Electrical",task:"LV Distribution",ps:"2025-04-15",pe:"2025-07-30",pp:48,ap:46,w:2.0},{disc:"Instrumentation",task:"SCADA & PLC",ps:"2025-03-01",pe:"2025-07-01",pp:65,ap:64,w:2.5},{disc:"Instrumentation",task:"Online Analyzers",ps:"2025-05-01",pe:"2025-08-15",pp:30,ap:28,w:1.5},{disc:"Piping",task:"Process Interconnections",ps:"2025-03-15",pe:"2025-07-30",pp:62,ap:60,w:3.0},{disc:"Piping",task:"Chemical Dosing Lines",ps:"2025-05-01",pe:"2025-07-30",pp:35,ap:34,w:1.5},{disc:"Procurement",task:"Membrane Modules",ps:"2025-01-15",pe:"2025-05-01",pp:100,ap:100,w:3.5},{disc:"Procurement",task:"Chemical Systems",ps:"2025-03-01",pe:"2025-06-01",pp:78,ap:78,w:2.0},{disc:"Testing",task:"Performance Testing",ps:"2025-09-01",pe:"2025-11-01",pp:0,ap:0,w:2.0},{disc:"Testing",task:"Environmental Clearance",ps:"2025-11-01",pe:"2025-12-15",pp:0,ap:0,w:1.5}]},{name:"Project Golf",code:"PRJ-G",type:"Substation — 275kV",tasks:[{disc:"Civil",task:"Grading & Drainage",ps:"2025-01-05",pe:"2025-03-01",pp:100,ap:100,w:2.0},{disc:"Civil",task:"Control Bldg Foundation",ps:"2025-02-01",pe:"2025-04-30",pp:95,ap:96,w:2.5},{disc:"Structural",task:"Control Building",ps:"2025-04-01",pe:"2025-08-15",pp:48,ap:46,w:3.0},{disc:"Structural",task:"Equipment Gantry",ps:"2025-03-15",pe:"2025-06-30",pp:70,ap:68,w:2.0},{disc:"Mechanical",task:"Power Transformer 275kV",ps:"2025-01-10",pe:"2025-06-30",pp:85,ap:86,w:4.0},{disc:"Mechanical",task:"Transformer Installation",ps:"2025-07-01",pe:"2025-09-30",pp:10,ap:10,w:3.0},{disc:"Electrical",task:"GIS Switchgear",ps:"2025-02-01",pe:"2025-07-01",pp:82,ap:84,w:4.5},{disc:"Electrical",task:"Protection Relays",ps:"2025-05-01",pe:"2025-08-30",pp:35,ap:34,w:2.5},{disc:"Instrumentation",task:"SCADA RTU",ps:"2025-04-01",pe:"2025-07-30",pp:52,ap:50,w:2.0},{disc:"Instrumentation",task:"Metering CT/VT",ps:"2025-05-01",pe:"2025-08-01",pp:35,ap:33,w:1.5},{disc:"Piping",task:"SF6 Gas System",ps:"2025-05-15",pe:"2025-08-30",pp:30,ap:29,w:2.0},{disc:"Piping",task:"Oil Containment",ps:"2025-03-01",pe:"2025-06-01",pp:78,ap:78,w:1.5},{disc:"Procurement",task:"275kV Equipment",ps:"2025-01-05",pe:"2025-05-30",pp:92,ap:92,w:4.0},{disc:"Procurement",task:"Cable & Accessories",ps:"2025-03-01",pe:"2025-06-30",pp:72,ap:72,w:2.5},{disc:"Testing",task:"Factory Acceptance Test",ps:"2025-07-15",pe:"2025-09-01",pp:8,ap:8,w:2.0},{disc:"Testing",task:"Energisation & Testing",ps:"2025-10-01",pe:"2025-11-30",pp:0,ap:0,w:2.5}]},{name:"Project Hotel",code:"PRJ-H",type:"Port — Jetty Extension",tasks:[{disc:"Civil",task:"Dredging Works",ps:"2025-01-01",pe:"2025-04-30",pp:100,ap:88,w:5.0},{disc:"Civil",task:"Sheet Pile Installation",ps:"2025-02-15",pe:"2025-06-30",pp:78,ap:55,w:4.5},{disc:"Structural",task:"Jetty Deck Structure",ps:"2025-05-01",pe:"2025-10-30",pp:28,ap:15,w:5.5},{disc:"Structural",task:"Fender System",ps:"2025-08-01",pe:"2025-11-30",pp:0,ap:0,w:2.5},{disc:"Mechanical",task:"Ship-to-Shore Crane",ps:"2025-02-01",pe:"2025-08-30",pp:65,ap:45,w:5.0},{disc:"Mechanical",task:"Marine Loading Arm",ps:"2025-06-01",pe:"2025-10-30",pp:18,ap:8,w:4.0},{disc:"Electrical",task:"Shore Power System",ps:"2025-03-01",pe:"2025-07-30",pp:62,ap:48,w:2.5},{disc:"Electrical",task:"Navigation Lighting",ps:"2025-07-01",pe:"2025-09-30",pp:10,ap:9,w:1.5},{disc:"Instrumentation",task:"CCTV & Security",ps:"2025-04-01",pe:"2025-08-01",pp:48,ap:35,w:1.5},{disc:"Instrumentation",task:"Vessel Traffic System",ps:"2025-06-01",pe:"2025-10-01",pp:18,ap:10,w:2.0},{disc:"Piping",task:"Fire Main System",ps:"2025-04-15",pe:"2025-09-30",pp:40,ap:28,w:2.5},{disc:"Piping",task:"Bunker Fuel Lines",ps:"2025-06-01",pe:"2025-10-30",pp:18,ap:10,w:3.0},{disc:"Procurement",task:"Marine Equipment",ps:"2025-01-10",pe:"2025-06-30",pp:85,ap:70,w:4.5},{disc:"Procurement",task:"Cathodic Protection",ps:"2025-03-01",pe:"2025-06-01",pp:78,ap:72,w:2.0},{disc:"Testing",task:"Load Testing Berth",ps:"2025-12-01",pe:"2026-01-31",pp:0,ap:0,w:2.5},{disc:"Testing",task:"Marine Acceptance Trial",ps:"2026-01-15",pe:"2026-03-15",pp:0,ap:0,w:2.0}]},{name:"Project India",code:"PRJ-I",type:"Industrial — Chemical Plant",tasks:[{disc:"Civil",task:"Piling Works",ps:"2025-01-05",pe:"2025-03-30",pp:100,ap:100,w:3.5},{disc:"Civil",task:"Grade Slab",ps:"2025-03-01",pe:"2025-06-30",pp:68,ap:68,w:3.0},{disc:"Structural",task:"Process Structure",ps:"2025-04-01",pe:"2025-09-30",pp:42,ap:40,w:4.0},{disc:"Structural",task:"Equipment Skids",ps:"2025-05-01",pe:"2025-08-30",pp:28,ap:28,w:2.5},{disc:"Mechanical",task:"Reactor Vessel",ps:"2025-01-15",pe:"2025-07-30",pp:80,ap:80,w:6.0},{disc:"Mechanical",task:"Distillation Column",ps:"2025-02-01",pe:"2025-08-30",pp:70,ap:70,w:5.0},{disc:"Electrical",task:"Area Classification",ps:"2025-02-01",pe:"2025-04-01",pp:100,ap:100,w:1.5},{disc:"Electrical",task:"Hazardous Area Equip.",ps:"2025-04-15",pe:"2025-08-30",pp:45,ap:43,w:3.0},{disc:"Instrumentation",task:"SIL Assessment",ps:"2025-02-01",pe:"2025-04-30",pp:100,ap:100,w:2.0},{disc:"Instrumentation",task:"SIS Engineering",ps:"2025-05-01",pe:"2025-09-30",pp:28,ap:27,w:3.5},{disc:"Piping",task:"High Pressure Piping",ps:"2025-04-01",pe:"2025-09-30",pp:42,ap:40,w:5.0},{disc:"Piping",task:"Chemical Resistant Lining",ps:"2025-06-01",pe:"2025-10-30",pp:18,ap:17,w:3.0},{disc:"Procurement",task:"Process Equipment",ps:"2025-01-10",pe:"2025-06-30",pp:85,ap:84,w:5.5},{disc:"Procurement",task:"Specialty Chemicals",ps:"2025-06-01",pe:"2025-09-01",pp:20,ap:19,w:2.0},{disc:"Testing",task:"Process Hazard Analysis",ps:"2025-10-01",pe:"2025-11-30",pp:0,ap:0,w:2.5},{disc:"Testing",task:"Startup & Performance",ps:"2025-12-01",pe:"2026-03-31",pp:0,ap:0,w:3.0}]},{name:"Project Juliet",code:"PRJ-J",type:"Mining — Ore Processing",tasks:[{disc:"Civil",task:"Site Access Road",ps:"2025-01-01",pe:"2025-03-15",pp:100,ap:100,w:2.5},{disc:"Civil",task:"Tailings Dam",ps:"2025-01-15",pe:"2025-07-30",pp:80,ap:62,w:5.0},{disc:"Structural",task:"Processing Plant Bldg",ps:"2025-02-15",pe:"2025-08-30",pp:72,ap:52,w:5.0},{disc:"Structural",task:"Conveyor Structures",ps:"2025-04-01",pe:"2025-09-30",pp:42,ap:28,w:3.5},{disc:"Mechanical",task:"SAG Mill Installation",ps:"2025-03-01",pe:"2025-09-30",pp:62,ap:40,w:6.0},{disc:"Mechanical",task:"Ball Mill Installation",ps:"2025-05-01",pe:"2025-11-30",pp:22,ap:12,w:5.5},{disc:"Electrical",task:"33kV Power Supply",ps:"2025-02-01",pe:"2025-06-30",pp:82,ap:65,w:3.5},{disc:"Electrical",task:"Variable Speed Drives",ps:"2025-05-01",pe:"2025-09-30",pp:28,ap:18,w:3.0},{disc:"Instrumentation",task:"Process Control System",ps:"2025-03-01",pe:"2025-08-30",pp:62,ap:45,w:3.5},{disc:"Instrumentation",task:"Belt Scale & Analyzers",ps:"2025-06-01",pe:"2025-10-30",pp:18,ap:10,w:2.0},{disc:"Piping",task:"Slurry Piping",ps:"2025-05-01",pe:"2025-11-30",pp:22,ap:12,w:4.0},{disc:"Piping",task:"Process Water System",ps:"2025-04-15",pe:"2025-09-30",pp:38,ap:25,w:3.0},{disc:"Procurement",task:"Grinding Media",ps:"2025-04-01",pe:"2025-07-01",pp:55,ap:50,w:3.0},{disc:"Procurement",task:"Reagents & Chemicals",ps:"2025-07-01",pe:"2025-10-01",pp:8,ap:7,w:2.0},{disc:"Testing",task:"Dry Commissioning",ps:"2025-12-01",pe:"2026-02-28",pp:0,ap:0,w:2.5},{disc:"Testing",task:"Wet Commissioning",ps:"2026-02-15",pe:"2026-05-31",pp:0,ap:0,w:3.0}]}];
+
+function calcOv(tasks){const tw=tasks.reduce((s,t)=>s+t.w,0);const pw=tasks.reduce((s,t)=>s+t.w*t.pp/100,0);const aw=tasks.reduce((s,t)=>s+t.w*t.ap/100,0);return{planned:tw?pw/tw*100:0,actual:tw?aw/tw*100:0,get variance(){return this.actual-this.planned}}}
+function stBadge(v){if(v<-10)return{cls:'badge-crit',txt:'⚠ CRITICAL',dot:'dot-crit'};if(v<-3)return{cls:'badge-warn',txt:'▼ BEHIND',dot:'dot-warn'};return{cls:'badge-good',txt:'✔ ON TRACK',dot:'dot-good'}}
+function fmtD(s){return new Date(s).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'})}
+function buildSC(tasks){const base=new Date('2025-01-01');const labels=[],pd=[],ad=[];for(let m=0;m<=12;m++){const snap=new Date(base);snap.setMonth(snap.getMonth()+m);labels.push(snap.toLocaleDateString('en-GB',{month:'short',year:'2-digit'}));const tw=tasks.reduce((s,t)=>s+t.w,0);let pa=0,aa=0;tasks.forEach(t=>{const ps=new Date(t.ps),pe=new Date(t.pe);const td=Math.max((pe-ps)/86400000,1);const el=(snap-ps)/86400000;const pct=Math.max(0,Math.min(100,el/td*100));const dr=1-Math.abs(t.ap-t.pp)/100*0.3;pa+=t.w*pct/100;aa+=t.w*pct/100*Math.max(0.7,dr)});pd.push(+(pa/tw*100).toFixed(1));ad.push(+(aa/tw*100).toFixed(1))}return{labels,pd,ad}}
+
+let cur=0,chart=null;
+
+function renderTabs(){document.getElementById('tabs').innerHTML=PROJECTS.map((p,i)=>{const ov=calcOv(p.tasks);const st=stBadge(ov.variance);return`<button class="tab${i===cur?' active':''}" onclick="sel(${i})"><span class="status-dot ${st.dot}"></span>${p.code}</button>`}).join('')}
+
+function renderKPI(p){const ov=calcOv(p.tasks);const behind=p.tasks.filter(t=>t.ap<t.pp-5).length;const vc=ov.variance<-10?'bad':ov.variance<-3?'warn':'good';document.getElementById('kpi-row').innerHTML=`<div class="kpi-card k-plan"><div class="kpi-label">// Planned Overall</div><div class="kpi-val plan">${ov.planned.toFixed(1)}%</div><div class="kpi-sub">weighted avg</div></div><div class="kpi-card k-actual"><div class="kpi-label">// Actual Overall</div><div class="kpi-val actual">${ov.actual.toFixed(1)}%</div><div class="kpi-sub">weighted avg</div></div><div class="kpi-card k-var"><div class="kpi-label">// Variance</div><div class="kpi-val ${vc}">${ov.variance>=0?'+':''}${ov.variance.toFixed(1)}%</div><div class="kpi-sub">actual vs planned</div></div><div class="kpi-card k-behind"><div class="kpi-label">// Tasks Behind</div><div class="kpi-val ${behind>5?'bad':behind>2?'warn':'good'}">${behind}</div><div class="kpi-sub">need corrective action</div></div><div class="kpi-card" style="border-top:2px solid var(--text3)"><div class="kpi-label">// Project Type</div><div style="font-size:13px;font-weight:600;margin-top:6px;color:var(--text)">${p.type}</div><div class="kpi-sub">${p.tasks.length} tasks tracked</div></div>`}
+
+function renderSC(p){const{labels,pd,ad}=buildSC(p.tasks);if(chart){chart.destroy();chart=null}const ctx=document.getElementById('scurveChart').getContext('2d');chart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Planned',data:pd,borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,.05)',borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#00e5ff',tension:.4,fill:true},{label:'Actual',data:ad,borderColor:'#ff6b35',backgroundColor:'rgba(255,107,53,.05)',borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#ff6b35',tension:.4,fill:true}]},options:{responsive:true,maintainAspectRatio:true,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#8892b0',font:{family:"'Space Mono',monospace",size:11},boxWidth:16,padding:20}},tooltip:{backgroundColor:'#151d35',borderColor:'#1e2d50',borderWidth:1,titleColor:'#e8eaf6',bodyColor:'#8892b0',titleFont:{family:"'Space Mono',monospace",size:11},bodyFont:{family:"'Space Mono',monospace",size:11},callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%`}}},scal‌es:{x:{ticks:{color:'#4a5580',font:{family:"'Space Mono',monospace",size:9}},grid:{color:'rgba(30,45,80,.6)'}},y:{min:0,max:100,ticks:{color:'#4a5580',font:{family:"'Space Mono',monospace",size:9},callback:v=>v+'%'},grid:{color:'rgba(30,45,80,.6)'}}}}}})}
+
+function renderCA(p){const behind=p.tasks.filter(t=>t.ap<t.pp-5).sort((a,b)=>(a.ap-a.pp)-(b.ap-b.pp));document.getElementById('ca-count-badge').textContent=`${behind.length} Flag${behind.length!==1?'s':''}`;document.getElementById('ca-list').innerHTML=behind.length?behind.map(t=>{const v=t.ap-t.pp;const ic=v<-15;const act=v<-20?`Escalate — assign additional resources immediately`:v<-10?`Expedite ${t.task} — review & update recovery plan`:`Monitor closely — identify root cause of delay`;return`<div class="ca-item"><div class="ca-meta">${t.disc} · ${fmtD(t.ps)} → ${fmtD(t.pe)}</div><div class="ca-item-top"><div class="ca-task">${t.task}</div><div class="ca-var ${ic?'crit':'warn'}">${v}%</div></div><div class="ca-action">↳ ${act}</div></div>`}).join(''):`<div class="empty-state">✔ No corrective actions required<br>All tasks within tolerance</div>`}
+
+function renderTasks(p){document.getElementById('task-count-badge').textContent=`${p.tasks.length} Tasks`;document.getElementById('task-tbody').innerHTML=p.tasks.map(t=>{const v=t.ap-t.pp;let badge;if(t.pp===0)badge=`<span class="badge badge-ns">Not Started</span>`;else if(t.ap>=100)badge=`<span class="badge badge-done">Complete</span>`;else if(v<-10)badge=`<span class="badge badge-crit">Critical</span>`;else if(v<-3)badge=`<span class="badge badge-warn">Behind</span>`;else badge=`<span class="badge badge-good">On Track</span>`;const vc=v<-10?'var(--danger)':v<-3?'var(--warn)':'var(--accent3)';return`<tr><td><span class="disc-tag">${t.disc}</span></td><td style="font-weight:600">${t.task}</td><td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${fmtD(t.ps)}</td><td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${fmtD(t.pe)}</td><td style="min-width:120px"><div class="progress-bar-wrap"><div class="progress-bar-plan" style="width:${t.pp}%"></div><div class="progress-bar-act" style="width:${t.ap}%"></div></div><div class="pct-label">Plan ${t.pp}% · Actual ${t.ap}%</div></td><td style="font-family:var(--mono);font-size:12px;font-weight:700;color:${vc}">${v>=0?'+':''}${v}%</td><td>${badge}</td></tr>`}).join('')}
+
+function renderPortfolio(){document.getElementById('portfolio-tbody').innerHTML=PROJECTS.map((p,i)=>{const ov=calcOv(p.tasks);const st=stBadge(ov.variance);const behind=p.tasks.filter(t=>t.ap<t.pp-5).length;const vc=ov.variance<-10?'var(--danger)':ov.variance<-3?'var(--warn)':'var(--accent3)';const{pd,ad}=buildSC(p.tasks);const mkPts=(data,col)=>{const pts=data.map((v,i)=>`${i*(60/12)},${20-v*0.2}`).join(' ');return`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.5"/>`};const spark=`<svg class="mini-scurve" viewBox="0 0 62 22" style="overflow:visible">${mkPts(pd,'#00e5ff')}${mkPts(ad,'#ff6b35')}</svg>`;return`<tr onclick="sel(${i})" class="${i===cur?'active-row':''}"><td><span class="proj-name">${p.name}</span><br><span style="font-size:11px;color:var(--text3);font-family:var(--mono)">${p.code} · ${p.type}</span></td><td style="font-family:var(--mono);font-size:12px;color:var(--accent)">${ov.planned.toFixed(1)}%</td><td style="font-family:var(--mono);font-size:12px;color:var(--accent2)">${ov.actual.toFixed(1)}%</td><td style="font-family:var(--mono);font-size:13px;font-weight:700;color:${vc}">${ov.variance>=0?'+':''}${ov.variance.toFixed(1)}%</td><td style="font-family:var(--mono);font-size:12px;color:${behind>5?'var(--danger)':behind>2?'var(--warn)':'var(--text2)'}">${behind}</td><td>${spark}</td><td><span class="badge ${st.cls}">${st.txt}</span></td></tr>`}).join('')}
+
+function sel(i){cur=i;const p=PROJECTS[i];renderTabs();renderKPI(p);renderSC(p);renderCA(p);renderTasks(p);renderPortfolio();window.scrollTo({top:0,behavior:'smooth'})}
+
+document.getElementById('footer-date').textContent='DATA AS OF: '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+renderTabs();sel(0);
+</script>
+</body>
+</html>
