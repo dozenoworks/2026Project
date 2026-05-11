@@ -7,10 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{--bg:#0a0e1a;--bg2:#0f1628;--bg3:#151d35;--border:#1e2d50;--border2:#263660;--accent:#00e5ff;--accent2:#ff6b35;--accent3:#7cfc6e;--warn:#ffd166;--danger:#ff4d6d;--text:#e8eaf6;--text2:#8892b0;--text3:#4a5580;--card:#111827;--radius:12px;--mono:'Space Mono',monospace;--sans:'Syne',sans-serif}
+:root{--bg:#f0f4f8;--bg2:#e4ecf4;--bg3:#d8e4ef;--border:#c2d4e6;--border2:#a8c0d8;--accent:#0072a3;--accent2:#d95f1a;--accent3:#2e8b4a;--warn:#b07d00;--danger:#c0203e;--text:#1a2535;--text2:#4a5e75;--text3:#7a90a8;--card:#ffffff;--radius:12px;--mono:'Space Mono',monospace;--sans:'Syne',sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(0,229,255,.04) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(255,107,53,.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(0,114,163,.06) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(217,95,26,.05) 0%,transparent 60%);pointer-events:none;z-index:0}
 .shell{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 24px 60px}
 header{padding:40px 0 32px;border-bottom:1px solid var(--border);margin-bottom:32px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
@@ -19,14 +19,14 @@ h1 span{color:var(--accent)}
 .subtitle{color:var(--text2);font-size:14px;margin-top:6px;font-weight:400}
 .header-right{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .live-dot{width:8px;height:8px;border-radius:50%;background:var(--accent3);box-shadow:0 0 0 3px rgba(124,252,110,.2);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(124,252,110,.2)}50%{box-shadow:0 0 0 6px rgba(124,252,110,.05)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(46,139,74,.25)}50%{box-shadow:0 0 0 6px rgba(46,139,74,.08)}}
 .live-label{font-family:var(--mono);font-size:11px;color:var(--accent3)}
 
 /* sim controls */
 .sim-btn{padding:9px 18px;border-radius:7px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:1px}
 .sim-btn:hover{border-color:var(--accent2);color:var(--accent2)}
-.sim-btn.running{border-color:var(--accent3);color:var(--accent3);background:rgba(124,252,110,.08);animation:simPulse 1.5s infinite}
-@keyframes simPulse{0%,100%{box-shadow:0 0 0 0 rgba(124,252,110,.3)}50%{box-shadow:0 0 0 6px rgba(124,252,110,0)}}
+.sim-btn.running{border-color:var(--accent3);color:var(--accent3);background:rgba(46,139,74,.08);animation:simPulse 1.5s infinite}
+@keyframes simPulse{0%,100%{box-shadow:0 0 0 0 rgba(46,139,74,.3)}50%{box-shadow:0 0 0 6px rgba(46,139,74,0)}}
 .step-btn{padding:9px 14px;border-radius:7px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .2s}
 .step-btn:hover{border-color:var(--accent);color:var(--accent)}
 .sim-date{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--bg3);padding:8px 14px;border-radius:7px;border:1px solid var(--border);white-space:nowrap}
@@ -37,7 +37,7 @@ h1 span{color:var(--accent)}
 .tabs{display:flex;flex-wrap:wrap;gap:8px}
 .tab{padding:8px 16px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s;position:relative}
 .tab:hover{border-color:var(--accent);color:var(--accent)}
-.tab.active{background:rgba(0,229,255,.1);border-color:var(--accent);color:var(--accent)}
+.tab.active{background:rgba(0,114,163,.1);border-color:var(--accent);color:var(--accent)}
 .status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:middle}
 .dot-good{background:var(--accent3)}.dot-warn{background:var(--warn)}.dot-crit{background:var(--danger)}
 
@@ -55,7 +55,7 @@ h1 span{color:var(--accent)}
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .card-title{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
-.card-badge{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:20px;background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.2)}
+.card-badge{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:20px;background:rgba(0,114,163,.1);color:var(--accent);border:1px solid rgba(0,114,163,.2)}
 .chart-wrap{padding:20px}
 canvas{max-height:280px}
 
@@ -65,7 +65,7 @@ canvas{max-height:280px}
 .task-table tr:hover td{background:rgba(255,255,255,.02)}
 .task-table tr:last-child td{border-bottom:none}
 .task-table tr.updated td{animation:rowFlash .6s ease}
-@keyframes rowFlash{0%{background:rgba(0,229,255,.08)}100%{background:transparent}}
+@keyframes rowFlash{0%{background:rgba(0,114,163,.1)}100%{background:transparent}}
 
 .progress-bar-wrap{width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden;position:relative}
 .progress-bar-plan{position:absolute;top:0;left:0;height:100%;background:var(--accent);opacity:.3;border-radius:3px;transition:width .8s ease}
@@ -73,11 +73,11 @@ canvas{max-height:280px}
 .pct-label{font-family:var(--mono);font-size:10px;margin-top:3px;color:var(--text2)}
 
 .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:all .3s}
-.badge-good{background:rgba(124,252,110,.12);color:var(--accent3);border:1px solid rgba(124,252,110,.25)}
-.badge-warn{background:rgba(255,209,102,.12);color:var(--warn);border:1px solid rgba(255,209,102,.25)}
-.badge-crit{background:rgba(255,77,109,.12);color:var(--danger);border:1px solid rgba(255,77,109,.25)}
-.badge-ns{background:rgba(74,85,128,.2);color:var(--text3);border:1px solid var(--border)}
-.badge-done{background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.2)}
+.badge-good{background:rgba(46,139,74,.12);color:var(--accent3);border:1px solid rgba(46,139,74,.3)}
+.badge-warn{background:rgba(176,125,0,.12);color:var(--warn);border:1px solid rgba(176,125,0,.3)}
+.badge-crit{background:rgba(192,32,62,.1);color:var(--danger);border:1px solid rgba(192,32,62,.25)}
+.badge-ns{background:rgba(122,144,168,.15);color:var(--text3);border:1px solid var(--border)}
+.badge-done{background:rgba(0,114,163,.1);color:var(--accent);border:1px solid rgba(0,114,163,.2)}
 .disc-tag{display:inline-block;padding:2px 8px;background:var(--bg3);color:var(--text2);border-radius:4px;font-size:11px;border:1px solid var(--border)}
 
 .ca-item{padding:14px 20px;border-bottom:1px solid rgba(30,45,80,.5);transition:background .15s}
@@ -109,7 +109,7 @@ canvas{max-height:280px}
 .table-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
 /* modal overlay */
-.modal-overlay{position:fixed;inset:0;background:rgba(5,8,20,.85);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay{position:fixed;inset:0;background:rgba(180,195,210,.7);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;width:min(680px,95vw);max-height:85vh;overflow-y:auto;padding:32px;position:relative;transform:translateY(20px);transition:transform .25s}
 .modal-overlay.open .modal{transform:translateY(0)}
@@ -597,28 +597,28 @@ function renderSCurve(p) {
     const { ctx: c, chartArea:{ top, bottom }, scales:{ x } } = chart;
     const xi = x.getPixelForValue(simMonth);
     c.save(); c.beginPath(); c.moveTo(xi, top); c.lineTo(xi, bottom);
-    c.strokeStyle='rgba(255,209,102,.4)'; c.lineWidth=1; c.setLineDash([4,4]); c.stroke();
-    c.fillStyle='rgba(255,209,102,.7)'; c.font="9px 'Space Mono',monospace";
+    c.strokeStyle='rgba(176,125,0,.5)'; c.lineWidth=1; c.setLineDash([4,4]); c.stroke();
+    c.fillStyle='rgba(176,125,0,.8)'; c.font="9px 'Space Mono',monospace";
     c.fillText('NOW', xi+4, top+12); c.restore();
   }};
   mainChart = new Chart(ctx, {
     type:'line',
     data:{ labels, datasets:[
-      { label:'Planned', data:pd, borderColor:'#00e5ff', backgroundColor:'rgba(0,229,255,.05)',
-        borderWidth:2.5, pointRadius:3, pointBackgroundColor:'#00e5ff', tension:.4, fill:true },
-      { label:'Actual',  data:ad, borderColor:'#ff6b35', backgroundColor:'rgba(255,107,53,.05)',
-        borderWidth:2.5, pointRadius:3, pointBackgroundColor:'#ff6b35', tension:.4, fill:true }
+      { label:'Planned', data:pd, borderColor:'#0072a3', backgroundColor:'rgba(0,114,163,.07)',
+        borderWidth:2.5, pointRadius:3, pointBackgroundColor:'#0072a3', tension:.4, fill:true },
+      { label:'Actual',  data:ad, borderColor:'#d95f1a', backgroundColor:'rgba(217,95,26,.07)',
+        borderWidth:2.5, pointRadius:3, pointBackgroundColor:'#d95f1a', tension:.4, fill:true }
     ]},
     plugins:[nowLine],
     options:{ responsive:true, maintainAspectRatio:true,
       interaction:{mode:'index',intersect:false},
-      plugins:{ legend:{ labels:{ color:'#8892b0', font:{family:"'Space Mono',monospace",size:11}, boxWidth:16, padding:20 }},
-        tooltip:{ backgroundColor:'#151d35', borderColor:'#1e2d50', borderWidth:1,
-          titleColor:'#e8eaf6', bodyColor:'#8892b0',
+      plugins:{ legend:{ labels:{ color:'#4a5e75', font:{family:"'Space Mono',monospace",size:11}, boxWidth:16, padding:20 }},
+        tooltip:{ backgroundColor:'#ffffff', borderColor:'#c2d4e6', borderWidth:1,
+          titleColor:'#1a2535', bodyColor:'#4a5e75',
           titleFont:{family:"'Space Mono',monospace",size:11}, bodyFont:{family:"'Space Mono',monospace",size:11},
           callbacks:{ label: c => ` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%` }}},
-      scales:{ x:{ ticks:{color:'#4a5580',font:{family:"'Space Mono',monospace",size:9}}, grid:{color:'rgba(30,45,80,.6)'} },
-        y:{ min:0, max:100, ticks:{color:'#4a5580',font:{family:"'Space Mono',monospace",size:9},callback:v=>v+'%'}, grid:{color:'rgba(30,45,80,.6)'} }}}
+      scales:{ x:{ ticks:{color:'#7a90a8',font:{family:"'Space Mono',monospace",size:9}}, grid:{color:'rgba(194,212,230,.6)'} },
+        y:{ min:0, max:100, ticks:{color:'#7a90a8',font:{family:"'Space Mono',monospace",size:9},callback:v=>v+'%'}, grid:{color:'rgba(194,212,230,.6)'} }}}
   });
 }
 
@@ -683,8 +683,8 @@ function renderPortfolio(flash=false) {
     // mark now on sparkline
     const nowX = simMonth*(60/18);
     const spark=`<svg class="mini-scurve" viewBox="0 0 62 22" style="overflow:visible">
-      ${mkPts(pd,'#00e5ff')}${mkPts(ad,'#ff6b35')}
-      <line x1="${nowX}" y1="0" x2="${nowX}" y2="22" stroke="rgba(255,209,102,.5)" stroke-width="1"/>
+      ${mkPts(pd,'#0072a3')}${mkPts(ad,'#d95f1a')}
+      <line x1="${nowX}" y1="0" x2="${nowX}" y2="22" stroke="rgba(176,125,0,.5)" stroke-width="1"/>
     </svg>`;
     const flashCls = flash ? ' flash-row' : '';
     return `<tr onclick="openModal(${i})" class="${i===curProject?'active-row':''}${flashCls}">
@@ -741,15 +741,15 @@ function openModal(idx) {
   modalChart = new Chart(mc, {
     type:'line',
     data:{ labels, datasets:[
-      { label:'Planned', data:pd, borderColor:'#00e5ff', borderWidth:2, pointRadius:2, tension:.4, fill:false },
-      { label:'Actual',  data:ad, borderColor:'#ff6b35', borderWidth:2, pointRadius:2, tension:.4, fill:false }
+      { label:'Planned', data:pd, borderColor:'#0072a3', borderWidth:2, pointRadius:2, tension:.4, fill:false },
+      { label:'Actual',  data:ad, borderColor:'#d95f1a', borderWidth:2, pointRadius:2, tension:.4, fill:false }
     ]},
     options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ labels:{ color:'#8892b0', font:{size:10}, boxWidth:12, padding:12 }},
-        tooltip:{ backgroundColor:'#151d35', borderColor:'#1e2d50', borderWidth:1,
+      plugins:{ legend:{ labels:{ color:'#4a5e75', font:{size:10}, boxWidth:12, padding:12 }},
+        tooltip:{ backgroundColor:'#ffffff', borderColor:'#c2d4e6', borderWidth:1,
           callbacks:{ label: c => ` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%` }}},
-      scales:{ x:{ ticks:{color:'#4a5580',font:{size:8},maxRotation:45}, grid:{color:'rgba(30,45,80,.5)'} },
-        y:{ min:0, max:100, ticks:{color:'#4a5580',font:{size:8},callback:v=>v+'%'}, grid:{color:'rgba(30,45,80,.5)'} }}}
+      scales:{ x:{ ticks:{color:'#7a90a8',font:{size:8},maxRotation:45}, grid:{color:'rgba(194,212,230,.5)'} },
+        y:{ min:0, max:100, ticks:{color:'#7a90a8',font:{size:8},callback:v=>v+'%'}, grid:{color:'rgba(194,212,230,.5)'} }}}
   });
 
   document.getElementById('modal-overlay').classList.add('open');
